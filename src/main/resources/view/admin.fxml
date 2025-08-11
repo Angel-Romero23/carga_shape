@@ -1,0 +1,68 @@
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.HBox?>
+<BorderPane prefWidth="1000" prefHeight="800" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.cargaShapes">
+
+   <!-- <top>
+        <MenuBar>
+            <Menu text="Pacientes">
+                <items>
+                    <MenuItem text="Registrar" onAction="#registroPaciente" />
+                    <MenuItem text="Lista" onAction="#listaPaciente" />
+                    < <SeparatorMenuItem />
+                     <MenuItem text="Salir" onAction="#salirApp" />
+                </items>
+            </Menu>
+            <Menu text="Doctores">
+                <items>
+                    <MenuItem text="Registrar" onAction="#registroDoctor" />
+                    <MenuItem text="Lista" onAction="#listaDoctores" />
+                  <SeparatorMenuItem />
+                    <MenuItem text="Salir" onAction="#salirApp" />
+                </items>
+            </Menu>
+            <Menu text="Citas">
+                <items>
+                    <MenuItem text="Agendar Cita" onAction="#mostrarAgendarCita" />
+                    <MenuItem text="Ver Citas" onAction="#mostrarVerCitas" />
+                </items>
+            </Menu>
+            <Menu text="Ayuda">
+                <items>
+                    <MenuItem text="Acerca de" onAction="#mostrarAcercaDe" />
+                </items>
+            </Menu>
+        </MenuBar>
+    </top>-->
+
+    <center>
+        <VBox spacing="20" alignment="CENTER">
+            <padding>
+                <Insets top="30" right="50" bottom="30" left="50"/>
+            </padding>
+            <Button text="Seleccionar carpeta" onAction="#listaArchivos" style="-fx-font-weight: bold; -fx-font-size: 12px;"/>
+            <HBox spacing="15" alignment="CENTER">
+            <Button text="Cargar Shapes" onAction="#cargarSeleccionados" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+            <Button text="Cargar Todos Shapes" onAction="#cargarTodos" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+            </HBox>
+            <TableView fx:id="tablaArchivos"  style="-fx-background-color: #f0f8ff; -fx-table-cell-border-color: #cccccc;">
+                <columns>
+                    <TableColumn fx:id="colSeleccionado" text="Seleccionar" prefWidth="100"/>
+                    <TableColumn fx:id="colNombre" text="Nombre del Archivo" prefWidth="200"/>
+                    <TableColumn fx:id="colTamanio" text="Tamaño (bytes)" prefWidth="100"/>
+                    <TableColumn fx:id="colRuta" text="Ruta completa" prefWidth="400"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="100" style="-fx-alignment: CENTER;"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+</BorderPane>
