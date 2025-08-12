@@ -1,256 +1,124 @@
 package controller;
 
 import entity.archivoInfo;
+import entity.bases;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import models.basecon;
+import models.conexion;
 
-import javafx.event.ActionEvent;
-import org.geotools.data.*;
-import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.ShapefileDataStoreFactory;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import javafx.scene.control.TableCell;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class cargaShapes {
     @FXML
-    private TableView<archivoInfo> tablaArchivos;
+    private TableView<bases> tablaBases;
     @FXML
     private TableColumn<archivoInfo, String> colStatus;
     @FXML
-    private TableColumn<archivoInfo, String> colNombre;
+    private TableColumn<archivoInfo, String> colNombrebd;
+    @FXML
+    private VBox contenidoCentral;
+    @FXML
+    private TableColumn<archivoInfo, Integer> colTablas;
+    @FXML
+    private TableColumn<archivoInfo, String> colRemesa;
+    @FXML
+    private TableColumn<archivoInfo, String> colDesc;
 
-    @FXML
-    private TableColumn<archivoInfo, Long> colTamanio;
-    @FXML
-    private TableColumn<archivoInfo, Boolean> colSeleccionado;
-    @FXML
-    private TableColumn<archivoInfo, String> colRuta;
     @FXML
     private void initialize() {
-        // Enlazar columnas con propiedades del modelo
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colTamanio.setCellValueFactory(new PropertyValueFactory<>("tamanio"));
-        colRuta.setCellValueFactory(new PropertyValueFactory<>("ruta"));
-        colSeleccionado.setCellValueFactory(new PropertyValueFactory<>("seleccionado"));
-        colSeleccionado.setCellFactory(tc -> new javafx.scene.control.cell.CheckBoxTableCell<>());
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        colStatus.setCellFactory(column -> new TableCell<archivoInfo, String>() {
-            @Override
-            protected void updateItem(String status, boolean empty) {
-                super.updateItem(status, empty);
+        if (tablaBases != null) {
+           // tablaBases.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+            tablaBases.getColumns().removeIf(c -> c.getText() == null || c.getText().isEmpty());
+            listaBases();
+        }
 
-                if (empty || status == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(status);
-
-                    if (status.equals("✔")) {
-                        setTextFill(javafx.scene.paint.Color.GREEN);
-                        setStyle("-fx-font-weight: bold; -fx-alignment: CENTER;");
-                    } else if (status.equals("✘")) {
-                        setTextFill(javafx.scene.paint.Color.RED);
-                        setStyle("-fx-font-weight: bold; -fx-alignment: CENTER;");
-                    } else {
-                        setTextFill(javafx.scene.paint.Color.BLACK);
-                        setStyle("-fx-alignment: CENTER;");
-                    }
-                }
-            }
-        });
-
-        CheckBox checkBoxHeader = new CheckBox();
-        checkBoxHeader.setOnAction(e -> {
-            boolean seleccionado = checkBoxHeader.isSelected();
-            for (archivoInfo item : tablaArchivos.getItems()) {
-                item.setSeleccionado(seleccionado);
-            }
-        });
-
-
-        colSeleccionado.setGraphic(checkBoxHeader);
-        colSeleccionado.setEditable(true);
-        tablaArchivos.setEditable(true);
     }
     @FXML
-    private void listaArchivos(ActionEvent event) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Selecciona una carpeta");
+    public void listaBases() {
+        LocalDate hoy = LocalDate.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String fechaFormateada = hoy.format(formato);
+        ObservableList<bases> bases = FXCollections.observableArrayList();
+        String sql = "select b.nom_base,b.tot_tablas,r.nom_remesa,st.nom_status,st.descrip \n" +
+                "\tfrom admin.bases b\n" +
+                "\tinner join admin.remesas r on b.remesa_id = r.id \n" +
+                "\tinner join admin.estados st on b.status = st.id ;";
+        try (Connection conn = conexion.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-        File carpeta = directoryChooser.showDialog(stage);
-        ObservableList<archivoInfo> lista = FXCollections.observableArrayList();
+            while (rs.next()) {
+                String nombre = rs.getString("nom_base");
+                int total_tablas = rs.getInt("tot_tablas");
+                String remesa = rs.getString("nom_remesa");
+                String status = rs.getString("nom_status");
+                String descrip = rs.getString("descrip");
 
-        if (carpeta != null && carpeta.isDirectory()) {
-            File[] archivos = carpeta.listFiles();
-
-            if (archivos != null) {
-                for (File archivo : archivos) {
-                    if (archivo.isFile() && archivo.getName().toLowerCase().endsWith(".shp")) {
-                        System.out.println("Archivo: " + archivo.getName());
-                        lista.add(new archivoInfo(
-                                archivo.getName(),
-                                archivo.length(),
-                                archivo.getAbsolutePath()
-                        ));
-                    }
-                }
+               bases.add(new bases(nombre,total_tablas,remesa,status,descrip));
             }
-            tablaArchivos.setItems(lista);
-        } else {
-            System.out.println("No se seleccionó una carpeta válida");
+
+            tablaBases.setItems(bases);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    }
-
-    @FXML
-    private void cargarSeleccionados() {
-        ObservableList<archivoInfo> archivos = tablaArchivos.getItems();
-
-        for (archivoInfo archivo : archivos) {
-            if (archivo.isSeleccionado()) {
-                try {
-                    cargaShape(archivo.getRuta());
-                    archivo.setStatus("✔️");
-                } catch (Exception e) {
-                    archivo.setStatus("❌");
-                    System.err.println("❌ Error al cargar: " + archivo.getNombre());
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        System.out.println("✔ Archivos seleccionados cargados.");
     }
     @FXML
-    private void cargarTodos() {
-        ObservableList<archivoInfo> archivos = tablaArchivos.getItems();
-
-        if (archivos.isEmpty()) {
-            System.out.println("No hay archivos para cargar.");
-            return;
-        }
-
-        for (archivoInfo archivo : archivos) {
-            try {
-                cargaShape(archivo.getRuta());
-                archivo.setStatus("✔️");
-            } catch (Exception e) {
-                archivo.setStatus("❌");
-                System.err.println("❌ Error al cargar: " + archivo.getNombre());
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("✔ Todos los archivos SHP han sido cargados.");
+    private void cargaShapes() throws Exception {
+        Node cargaShape = FXMLLoader.load(getClass().getResource("/view/shapes/cargarShape.fxml"));
+        mostrarContenido1(cargaShape);
+    }
+    private void mostrarContenido1(Node contenido) {
+        // Reemplazar el contenido del VBox central con la nueva vista
+        contenidoCentral.getChildren().clear();
+        contenidoCentral.getChildren().add(contenido);
     }
     @FXML
-    private void cargaShape(String archivo) throws IOException, FactoryException, TransformException {
-        File file = new File(archivo);
-        // Crear DataStore para leer el SHP
-        Map<String, Serializable> shpParams = new HashMap<>();
-        shpParams.put("url", file.toURI().toURL());
-        shpParams.put("charset", StandardCharsets.UTF_8.name());
-
-        ShapefileDataStoreFactory shpFactory = new ShapefileDataStoreFactory();
-        ShapefileDataStore shpDataStore = (ShapefileDataStore) shpFactory.createDataStore(shpParams);
-        shpDataStore.setCharset(StandardCharsets.UTF_8);
-
-        String typeName = shpDataStore.getTypeNames()[0];
-        SimpleFeatureSource featureSource = shpDataStore.getFeatureSource(typeName);
-
-        // Obtener CRS original y definir CRS destino EPSG:4326
-        SimpleFeatureType schema = featureSource.getSchema();
-        CoordinateReferenceSystem sourceCRS = schema.getCoordinateReferenceSystem();
-        CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
-        // Crear transformador de coordenadas
-        MathTransform transform = CRS.findMathTransform(sourceCRS, targetCRS, true);
-
-        // Construir nuevo schema con CRS EPSG:4326
-        SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-        builder.init(schema);
-        builder.setCRS(targetCRS);
-        SimpleFeatureType schema4326 = builder.buildFeatureType();
-
-        // Parámetros para conexión a PostGIS
-        Map<String, Object> postgisParams = new HashMap<>();
-        postgisParams.put("dbtype", "postgis");
-        postgisParams.put("host", "localhost");
-        postgisParams.put("port", 5433);
-        postgisParams.put("schema", "bged");
-        postgisParams.put("database", "geoloc_prueba");
-        postgisParams.put("user", "postgres");
-        postgisParams.put("passwd", "Angel2397.");
-
-        DataStore postgisDataStore = DataStoreFinder.getDataStore(postgisParams);
-        if (postgisDataStore == null) {
-            throw new RuntimeException("No se pudo conectar a la base de datos PostGIS.");
-        }
-
-        // Crear tabla con schema que tiene CRS EPSG:4326
-        postgisDataStore.createSchema(schema4326);
-
-        String tableName = schema4326.getTypeName();
-        FeatureStore<SimpleFeatureType, SimpleFeature> targetStore =
-                (FeatureStore<SimpleFeatureType, SimpleFeature>) postgisDataStore.getFeatureSource(tableName);
-
-        // Leer features del shapefile y transformarlas
-        FeatureCollection<SimpleFeatureType, SimpleFeature> collection = featureSource.getFeatures();
-        try (FeatureWriter<SimpleFeatureType, SimpleFeature> writer =
-                     postgisDataStore.getFeatureWriterAppend(tableName, Transaction.AUTO_COMMIT)) {
-
-            try (FeatureIterator<SimpleFeature> features = collection.features()) {
-                while (features.hasNext()) {
-                    SimpleFeature feature = features.next();
-                    SimpleFeature newFeature = writer.next();
-
-                    for (int i = 0; i < feature.getAttributeCount(); i++) {
-                        Object attr = feature.getAttribute(i);
-
-                        if (attr instanceof org.locationtech.jts.geom.Geometry) {
-                            org.locationtech.jts.geom.Geometry geom = (org.locationtech.jts.geom.Geometry) attr;
-                            org.locationtech.jts.geom.Geometry geom4326 = JTS.transform(geom, transform);
-
-                            newFeature.setAttribute(i, geom4326);
-                        } else {
-                            newFeature.setAttribute(i, attr);
-                        }
-                    }
-                    writer.write();
-                }
-            }
-            // Cerrar DataStores
-            shpDataStore.dispose();
-            postgisDataStore.dispose();
-
-
-            System.out.println("✔ Shapefile cargado correctamente en PostgreSQL/PostGIS con geometrías transformadas a EPSG:4326.");
-        }
-
-
-
+    private void home() throws Exception {
+        Node casa = FXMLLoader.load(getClass().getResource("/view/admin.fxml"));
+        mostrarContenido1(casa);
     }
+    @FXML
+    private void crearBD() throws Exception {
+        Node createBase = FXMLLoader.load(getClass().getResource("/view/bases/crearBase.fxml"));
+        mostrarContenido(createBase);
+    }
+
+    private void mostrarContenido(Node contenido) {
+        contenidoCentral.getChildren().clear();
+
+        if (contenido instanceof Region) {
+            Region region = (Region) contenido;
+            region.setMaxWidth(300);
+            region.setMaxHeight(220);
+        }
+
+        StackPane wrapper = new StackPane(contenido);
+        wrapper.setMaxSize(300, 220);
+
+        contenidoCentral.getChildren().add(wrapper);
+
+        VBox.setVgrow(wrapper, Priority.NEVER);
+        contenidoCentral.setAlignment(Pos.TOP_CENTER);
+    }
+
+
 }
