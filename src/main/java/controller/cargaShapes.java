@@ -16,15 +16,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import models.basecon;
-import models.conexion;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.io.IOException;
 
 public class cargaShapes {
     @FXML
@@ -44,40 +36,10 @@ public class cargaShapes {
 
     @FXML
     private void initialize() {
-        if (tablaBases != null) {
-           // tablaBases.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-            tablaBases.getColumns().removeIf(c -> c.getText() == null || c.getText().isEmpty());
-            listaBases();
-        }
-
-    }
-    @FXML
-    public void listaBases() {
-        LocalDate hoy = LocalDate.now();
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String fechaFormateada = hoy.format(formato);
-        ObservableList<bases> bases = FXCollections.observableArrayList();
-        String sql = "select b.nom_base,b.tot_tablas,r.nom_remesa,st.nom_status,st.descrip \n" +
-                "\tfrom admin.bases b\n" +
-                "\tinner join admin.remesas r on b.remesa_id = r.id \n" +
-                "\tinner join admin.estados st on b.status = st.id ;";
-        try (Connection conn = conexion.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String nombre = rs.getString("nom_base");
-                int total_tablas = rs.getInt("tot_tablas");
-                String remesa = rs.getString("nom_remesa");
-                String status = rs.getString("nom_status");
-                String descrip = rs.getString("descrip");
-
-               bases.add(new bases(nombre,total_tablas,remesa,status,descrip));
-            }
-
-            tablaBases.setItems(bases);
-
-        } catch (SQLException e) {
+        try {
+            Node basesListas = FXMLLoader.load(getClass().getResource("/view/basesListas.fxml"));
+            mostrarContenido2(basesListas);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -91,9 +53,15 @@ public class cargaShapes {
         contenidoCentral.getChildren().clear();
         contenidoCentral.getChildren().add(contenido);
     }
+
+    private void mostrarContenido2(Node contenido) {
+        // Reemplazar el contenido del VBox central con la nueva vista
+        contenidoCentral.getChildren().clear();
+        contenidoCentral.getChildren().add(contenido);
+    }
     @FXML
     private void home() throws Exception {
-        Node casa = FXMLLoader.load(getClass().getResource("/view/admin.fxml"));
+        Node casa = FXMLLoader.load(getClass().getResource("/view/basesListas.fxml"));
         mostrarContenido1(casa);
     }
     @FXML

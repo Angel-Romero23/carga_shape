@@ -1,0 +1,44 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+            <VBox  xmlns="http://javafx.com/javafx/8"
+                   xmlns:fx="http://javafx.com/fxml/1"
+                   spacing="15" alignment="TOP_CENTER"
+                   fx:controller="controller.controllerMenu">
+                <padding>
+                    <Insets top="10" right="30" bottom="20" left="30"/>
+                </padding>
+                <TableView fx:id="tablaBases" style="-fx-background-color: #f0f8ff; -fx-table-cell-border-color: #cccccc;">
+                    <columns>
+                        <TableColumn text="Base de Datos" prefWidth="150">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="nombrebase" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Total Tablas" prefWidth="100">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="tottablas" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Remesa" prefWidth="100">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="remesa" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Status" prefWidth="100">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="status" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn text="Descripción" prefWidth="400">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="descrip" />
+                            </cellValueFactory>
+                        </TableColumn>
+                    </columns>
+                </TableView>
+            </VBox>
+

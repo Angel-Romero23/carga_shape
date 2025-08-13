@@ -104,7 +104,6 @@ public class controllerShape {
             }
         });
 
-
         colSeleccionado.setGraphic(checkBoxHeader);
         colSeleccionado.setEditable(true);
         tablaArchivos.setEditable(true);
@@ -113,7 +112,7 @@ public class controllerShape {
 
     private void cargarBases() {
         ObservableList<baseInfo> listaBases = FXCollections.observableArrayList();
-        String sql = "select * from admin.bases;";
+        String sql = "select * from admin.bases where status = 1;";
         try (Connection conn = conexion.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -156,7 +155,7 @@ public class controllerShape {
             }
             tablaArchivos.setItems(lista);
         } else {
-            System.out.println("No se seleccionó una carpeta válida");
+            mostrarAlerta("Error","Selecciona una Carpeta de Archivos.");
         }
     }
 
@@ -183,10 +182,10 @@ public class controllerShape {
                 }
             }
         }
+        mostrarAlerta("Exito","Archivos Seleccionados Cargados");
         System.out.println("✔ Archivos seleccionados cargados.");
         } else {
-            System.out.println("No se ha seleccionado ninguna base de datos.");
-
+            mostrarAlerta("Error","Selecciona una Base de Datos.");
         }
     }
     @FXML
@@ -217,15 +216,14 @@ public class controllerShape {
             funciones fun = new funciones();
             fun.actualizaEstado(idBase,nombreBase,usu,pas);
 
+            mostrarAlerta("Exito","Proceso de Carga Terminado");
             System.out.println("✔ Todos los archivos SHP han sido cargados.");
         } else {
-            System.out.println("No se ha seleccionado ninguna base de datos.");
-
+            mostrarAlerta("Error","Selecciona una Base de Datos.");
         }
     }
     @FXML
     private void cargaShape(String archivo,String nombreBase,String usu,String pas) throws IOException, FactoryException, TransformException {
-        baseInfo seleccion = comboBD.getSelectionModel().getSelectedItem();
 
         if (nombreBase.isEmpty() || usu.isEmpty() || pas.isEmpty()){
             mostrarAlerta("Error", "Completa las credenciales.");
