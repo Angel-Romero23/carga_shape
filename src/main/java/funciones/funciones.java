@@ -8,7 +8,7 @@ public class funciones {
     public int guardaBase(String base,int total,String usu, String pas){
         int estado = 0;
         String url = "jdbc:postgresql://localhost:5433/gestion_bases";
-        String sql="insert into admin.bases(nom_base,tot_tablas,status,remesa_id) values (?,?,1,1)";
+        String sql="insert into admin.bases(nom_base,tot_tablas,status,remesa_id,fecha_registro,fecha_update) values (?,?,1,(select max(id) from admin.remesas),now(),now())";
         basecon conexion2 = new basecon(url, usu, pas);
         try {
             Connection conn2 = conexion2.conectar();

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <BorderPane prefWidth="1000" prefHeight="800" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.cargaShapes">
+            fx:controller="controller.cargaShapes" stylesheets="@/css/estilos.css">
 
     <top>
         <MenuBar>
@@ -34,6 +34,11 @@
             <Menu text="Control Shapes">
                 <items>
                     <MenuItem text="Cargar" onAction="#cargaShapes" />
+                </items>
+            </Menu>
+            <Menu text="Reestructuración">
+                <items>
+                    <MenuItem text="Procesos" onAction="#cargaShapes" />
                 </items>
             </Menu>
             <!--<Menu text="Citas">

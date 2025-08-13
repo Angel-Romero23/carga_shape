@@ -27,10 +27,10 @@ public class controllerMenu {
     @FXML
     public void listaBases() {
         ObservableList<bases> bases = FXCollections.observableArrayList();
-        String sql = "select b.nom_base,b.tot_tablas,r.nom_remesa,st.nom_status,st.descrip \n" +
+        String sql = "select b.nom_base,b.tot_tablas,r.nom_remesa,op.nom_operacion ,op.descrip_oper \n" +
                 "\tfrom admin.bases b\n" +
                 "\tinner join admin.remesas r on b.remesa_id = r.id \n" +
-                "\tinner join admin.estados st on b.status = st.id ;";
+                "\tinner join admin.operaciones op on b.status = op.num_operacion ;";
         try (Connection conn = conexion.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -39,8 +39,8 @@ public class controllerMenu {
                 String nombre = rs.getString("nom_base");
                 int total_tablas = rs.getInt("tot_tablas");
                 String remesa = rs.getString("nom_remesa");
-                String status = rs.getString("nom_status");
-                String descrip = rs.getString("descrip");
+                String status = rs.getString("nom_operacion");
+                String descrip = rs.getString("descrip_oper");
 
                 bases.add(new bases(nombre,total_tablas,remesa,status,descrip));
             }

@@ -1,0 +1,45 @@
+.table-view .column-header-background {
+    -fx-background-color: #C227F5; /* Fondo morado */
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-font-weight: bold;
+}
+
+.table-view .column-header,
+.table-view .column-header-background {
+    -fx-background-color: #C227F5;
+}
+
+.table-view .column-header .text {
+    -fx-fill: white;
+    -fx-font-weight: bold;
+}
+/* Fondo morado para toda la barra de menú */
+.menu-bar {
+    -fx-background-color: #C227F5;
+}
+
+/* Texto blanco para los nombres de los menús */
+.menu-bar .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Fondo morado y texto blanco para los items del menú al desplegar */
+.menu-item {
+    -fx-background-color: #C227F5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Opcional: cambiar color al pasar el mouse */
+.menu-item:hover {
+    -fx-background-color: #9E1CCF;
+}
+
+/* Opcional: ítems separados o deshabilitados */
+.separator-menu-item {
+    -fx-background-color: #C227F5;
+}

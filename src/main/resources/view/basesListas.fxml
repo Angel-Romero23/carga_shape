@@ -4,14 +4,16 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-            <VBox  xmlns="http://javafx.com/javafx/8"
-                   xmlns:fx="http://javafx.com/fxml/1"
-                   spacing="15" alignment="TOP_CENTER"
-                   fx:controller="controller.controllerMenu">
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="15" alignment="TOP_CENTER"
+      fx:controller="controller.controllerMenu" stylesheets="@/css/estilos.css">
                 <padding>
                     <Insets top="10" right="30" bottom="20" left="30"/>
                 </padding>
-                <TableView fx:id="tablaBases" style="-fx-background-color: #f0f8ff; -fx-table-cell-border-color: #cccccc;">
+
+                <TableView fx:id="tablaBases" >
                     <columns>
                         <TableColumn text="Base de Datos" prefWidth="150">
                             <cellValueFactory>
@@ -28,7 +30,7 @@
                                 <PropertyValueFactory property="remesa" />
                             </cellValueFactory>
                         </TableColumn>
-                        <TableColumn text="Status" prefWidth="100">
+                        <TableColumn text="Operaciones" prefWidth="100">
                             <cellValueFactory>
                                 <PropertyValueFactory property="status" />
                             </cellValueFactory>
