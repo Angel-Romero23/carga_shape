@@ -1,14 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="15" alignment="TOP_CENTER"
+      fx:controller="controller.controllerRemesa" stylesheets="@/css/estilos.css">
+    <padding>
+        <Insets top="10" right="30" bottom="20" left="30"/>
+    </padding>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+    <TableView fx:id="tablaRemesas" >
+        <columns>
+            <TableColumn text="id" prefWidth="100">
+                <cellValueFactory>
+                    <PropertyValueFactory property="id" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Remesa" prefWidth="150">
+                <cellValueFactory>
+                    <PropertyValueFactory property="nomRemesa" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Fecha" prefWidth="200">
+                <cellValueFactory>
+                    <PropertyValueFactory property="fechaReg" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+</VBox>
 
-</AnchorPane>

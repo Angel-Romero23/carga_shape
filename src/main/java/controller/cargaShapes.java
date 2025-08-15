@@ -1,7 +1,6 @@
 package controller;
 
-import entity.archivoInfo;
-import entity.bases;
+import entity.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -70,6 +69,18 @@ public class cargaShapes {
         mostrarContenido(createBase);
     }
 
+    @FXML
+    private void crearRemesa() throws Exception {
+        Node createBase = FXMLLoader.load(getClass().getResource("/view/remesas/crearRemesa.fxml"));
+        mostrarContenido(createBase);
+    }
+
+    @FXML
+    private void listaRemesa() throws Exception {
+        Node listaRemesa= FXMLLoader.load(getClass().getResource("/view/remesas/listaRemesas.fxml"));
+        mostrarContenido1(listaRemesa);
+    }
+
     private void mostrarContenido(Node contenido) {
         contenidoCentral.getChildren().clear();
 
@@ -87,6 +98,4 @@ public class cargaShapes {
         VBox.setVgrow(wrapper, Priority.NEVER);
         contenidoCentral.setAlignment(Pos.TOP_CENTER);
     }
-
-
 }

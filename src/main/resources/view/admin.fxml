@@ -31,6 +31,12 @@
                      <MenuItem text="Salir"  />
                 </items>
             </Menu>
+            <Menu text="Remesas">
+                <items>
+                    <MenuItem text="Crear" onAction="#crearRemesa"  />
+                    <MenuItem text="Lista" onAction="#listaRemesa" />
+                </items>
+            </Menu>
             <Menu text="Control Shapes">
                 <items>
                     <MenuItem text="Cargar" onAction="#cargaShapes" />
